@@ -61,7 +61,7 @@ function run_parallel_test {
 
 RUNNING=false
 
-if [[ ( x${BUILD_OS_NAME} == xel && ${BUILD_OS_VERSION} > 6 ) || x${BUILD_OS_NAME} == xf ]]; then
+if [[ ${JDK_VERSION} -lt 25 ]]; then
   RUNNING=true
 fi
 
@@ -86,7 +86,7 @@ fi
 echo "" > $TMPRESULTS/parallel_install_log.txt
 
 let "PASSED+=1"
-echo "Appending dummy test, so there is at elast one test always running in suite" >> $TMPRESULTS/parallel_install_log.txt
+echo "Appending dummy test, so there is at least one test always running in suite" >> $TMPRESULTS/parallel_install_log.txt
 TEST=$(printXmlTest "tps" "dummyTestToPrventTotalFailure" "0" "" "")
 BODY+="$TEST
 " # new line to improve clarity, also is used in TPS/tesultsToJtregs.sh
