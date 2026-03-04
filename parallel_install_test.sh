@@ -61,8 +61,19 @@ function run_parallel_test {
 
 RUNNING=false
 
-if [[ ${JDK_VERSION} -lt 25 ]]; then
+# parallel install is on el7-9
+if [[ x${BUILD_OS_NAME} == xel && ${BUILD_OS_VERSION} -gt 6 && ${BUILD_OS_VERSION} -lt 10 ]]; then
   RUNNING=true
+fi
+
+# not on el10 for ojdk21
+if [[ ${BUILD_OS_VERSION} -ge 10 && ${JDK_VERSION} -ge 21 ]]; then
+  RUNNING=false
+fi
+
+# not on ojdk25 at all
+if [[ ${JDK_VERSION} -ge 25 ]]; then
+  RUNNING=false
 fi
 
 FAILED=0
