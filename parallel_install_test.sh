@@ -61,8 +61,19 @@ function run_parallel_test {
 
 RUNNING=false
 
-if [[ ( x${BUILD_OS_NAME} == xel && ${BUILD_OS_VERSION} > 6 ) || x${BUILD_OS_NAME} == xf ]]; then
+# parallel install is on el7-9
+if [[ x${BUILD_OS_NAME} == xel && ${BUILD_OS_VERSION} -gt 6 && ${BUILD_OS_VERSION} -lt 10 ]]; then
   RUNNING=true
+fi
+
+# not on el10 for ojdk21
+if [[ ${BUILD_OS_VERSION} -ge 10 && ${JDK_VERSION} -ge 21 ]]; then
+  RUNNING=false
+fi
+
+# not on ojdk25 at all
+if [[ ${JDK_VERSION} -ge 25 ]]; then
+  RUNNING=false
 fi
 
 FAILED=0
@@ -86,7 +97,7 @@ fi
 echo "" > $TMPRESULTS/parallel_install_log.txt
 
 let "PASSED+=1"
-echo "Appending dummy test, so there is at elast one test always running in suite" >> $TMPRESULTS/parallel_install_log.txt
+echo "Appending dummy test, so there is at least one test always running in suite" >> $TMPRESULTS/parallel_install_log.txt
 TEST=$(printXmlTest "tps" "dummyTestToPrventTotalFailure" "0" "" "")
 BODY+="$TEST
 " # new line to improve clarity, also is used in TPS/tesultsToJtregs.sh
